@@ -1,13 +1,13 @@
 name: "tequipano_web"
 
 services:
-  rails-app:
+  app:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
 
     volumes:
-    - ../../.:/workspaces/.:cached
+      - ../../.:/workspaces/.:cached
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
@@ -15,11 +15,17 @@ services:
     # Uncomment the next line to use a non-root user for all processes.
     # user: vscode
 
+    # Publish the app port on the host so http://localhost:3000 works with the
+    # plain devcontainer CLI (forwardPorts in devcontainer.json only applies
+    # in editors like VS Code / Codespaces).
+    ports:
+      - "3000:3000"
+
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
     depends_on:
-    - selenium
-    - postgres
+      - selenium
+      - postgres
 
   selenium:
     image: selenium/standalone-chromium
@@ -29,14 +35,14 @@ services:
     image: postgres:18
     restart: unless-stopped
     networks:
-    - default
+      - default
     volumes:
-    # PostgreSQL 18+ expects the data parent directory (not .../data) so major
-    # upgrades can use pg_upgrade inside the volume.
-    - postgres-data:/var/lib/postgresql
+      # PostgreSQL 18+ expects the data parent directory (not .../data) so major
+      # upgrades can use pg_upgrade inside the volume.
+      - postgres-data:/var/lib/postgresql
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
 
 volumes:
   postgres-data:
