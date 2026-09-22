@@ -1,0 +1,19 @@
+[tools]
+node = "26.9.0"
+ruby = "4.0.7"
+
+[tasks.server]
+description = "Start the Rails development server"
+run = "bin/rails server"
+
+[tasks.test]
+description = "Run the test suite"
+run = "bin/rails test"
+
+[tasks.lint]
+description = "Run RuboCop"
+run = "bin/rubocop"
+
+[tasks.setup]
+description = "Install gems and prepare the database"
+run = "bin/setup --skip-server"
