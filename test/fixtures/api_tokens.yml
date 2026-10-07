@@ -1,0 +1,9 @@
+one:
+  user: one
+  token: mytoken123
+  expires_at: <%= 1.day.from_now %>
+
+two:
+  user: two
+  token: anothertoken456
+  expires_at: <%= 1.week.from_now %>
