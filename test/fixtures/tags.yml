@@ -1,0 +1,7 @@
+one:
+  name: important
+  color: "#FF0000"
+
+two:
+  name: urgent
+  color: "#FFA500"
