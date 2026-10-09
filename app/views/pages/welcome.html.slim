@@ -1,0 +1,104 @@
+.app-main__header
+  h1.app-main__title Welcome to Tequipano
+  = link_to "New task", "#", class: "btn btn--primary"
+
+section
+  h2 Form elements
+  = form_with url: "#", class: "form" do |f|
+    .form__group
+      = f.label :title, "Title", class: "form__label form__label--required"
+      = f.text_field :title, class: "form__input", placeholder: "e.g. Design the Kanban board"
+    .form__row
+      .form__group
+        = f.label :list, "List", class: "form__label"
+        = f.select :list, [ "Inbox", "Sprint 1", "Backlog" ], {}, class: "form__select"
+      .form__group
+        = f.label :status, "Status", class: "form__label"
+        = f.select :status, [ "Todo", "Doing", "Done", "Paused", "Blocked" ], {}, class: "form__select"
+    .form__group
+      = f.label :notes, "Notes", class: "form__label"
+      = f.text_area :notes, class: "form__textarea", placeholder: "Add more detail…"
+      span.form__hint Use markdown for checklists and links.
+    .form__group--error
+      .form__group
+        = f.label :email, "Email", class: "form__label"
+        = f.text_field :email, class: "form__input", value: "not-an-email"
+        span.form__error Please enter a valid email address.
+    .form__check
+      = f.check_box :urgent
+      = f.label :urgent, "Mark as urgent"
+    .form__row
+      = f.submit "Save task", class: "btn btn--primary"
+      = link_to "Cancel", "#", class: "btn btn--secondary"
+
+section
+  h2 Draggable task list
+  p
+    | Drag the handle to reorder. This list uses the same styles as the future Kanban board.
+  ul.task-list
+    li.task-card
+      button.task-card__handle type="button" aria-label="Drag to reorder"
+        | ⠿
+      .task-card__body
+        p.task-card__title Design the token palette
+        .task-card__meta
+          span.badge.badge--done done
+          span ·
+          span Design
+      .task-card__actions = link_to "Edit", "#", class: "btn btn--ghost btn--sm"
+    li.task-card
+      button.task-card__handle type="button" aria-label="Drag to reorder"
+        | ⠿
+      .task-card__body
+        p.task-card__title Wire the task list drag-and-drop controller
+        .task-card__meta
+          span.badge.badge--doing doing
+          span ·
+          ul.task-card__tags
+            li.task-card__tag frontend
+            li.task-card__tag stimulus
+      .task-card__actions = link_to "Edit", "#", class: "btn btn--ghost btn--sm"
+    li.task-card
+      button.task-card__handle type="button" aria-label="Drag to reorder"
+        | ⠿
+      .task-card__body
+        p.task-card__title Draft the API contracts
+        .task-card__meta
+          span.badge.badge--todo todo
+          span ·
+          span Backend
+      .task-card__actions = link_to "Edit", "#", class: "btn btn--ghost btn--sm"
+    li.task-card
+      button.task-card__handle type="button" aria-label="Drag to reorder"
+        | ⠿
+      .task-card__body
+        p.task-card__title Waiting on brand assets
+        .task-card__meta
+          span.badge.badge--paused paused
+      .task-card__actions = link_to "Edit", "#", class: "btn btn--ghost btn--sm"
+
+section
+  h2 Status badges
+  p
+    span.badge.badge--todo todo
+    | &#32;
+    span.badge.badge--doing doing
+    | &#32;
+    span.badge.badge--done done
+    | &#32;
+    span.badge.badge--paused paused
+    | &#32;
+    span.badge.badge--blocked blocked
+
+section
+  h2 User profile
+  .user-profile.user-profile--card
+    span.user-profile__avatar
+      | VH
+    .user-profile__info
+      p.user-profile__name Victor Herrera
+      p.user-profile__email victor@tequipano.test
+      p.user-profile__meta
+        | Timezone:
+        = " "
+        | UTC

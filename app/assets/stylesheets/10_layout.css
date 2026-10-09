@@ -1,0 +1,57 @@
+/*
+ * Application shell: sidebar + main content.
+ * Mobile-first; on wider screens the side menu sits in a fixed column.
+ */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  flex-shrink: 0;
+  background-color: var(--color-surface);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.app-main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4);
+}
+
+.app-main__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.app-main__title {
+  margin: 0;
+  font-size: var(--text-xl);
+}
+
+@media (min-width: 48rem) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .app-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    border-right: var(--border-width) solid var(--color-border);
+    border-bottom: 0;
+  }
+
+  .app-main {
+    padding: var(--space-6) var(--space-6);
+  }
+}
