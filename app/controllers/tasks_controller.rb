@@ -57,6 +57,22 @@ class TasksController < ApplicationController
     end
   end
 
+  def reorder
+    task_ids = params.expect(task_ids: []).filter_map { |id| Integer(id, exception: false) }
+    tasks = @list.tasks.where(id: task_ids).index_by(&:id)
+
+    Task.transaction do
+      task_ids.each_with_index do |id, index|
+        tasks[id]&.update!(position: index)
+      end
+    end
+
+    respond_to do |format|
+      format.html { redirect_to list_path(@list), notice: "Tasks were successfully reordered." }
+      format.json { head :no_content }
+    end
+  end
+
   private
 
   def set_list

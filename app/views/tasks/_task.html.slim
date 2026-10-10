@@ -1,4 +1,13 @@
-li.task-card id=dom_id(task) class=("task-card--done" if task.done?)
+- draggable = local_assigns.fetch(:draggable, false)
+- card_data = {}
+- if draggable
+  - card_data["task-id"] = task.id
+  - card_data["action"] = "dragstart->task-list#dragstart dragend->task-list#dragend"
+  - card_data["task-list-target"] = "card"
+li.task-card *{ id: dom_id(task), class: ("task-card--done" if task.done?), draggable: (draggable ? "true" : nil), data: card_data }
+  - if draggable
+    span.task-card__handle title="Drag to reorder" aria-hidden="true"
+      = ui_icon :drag
   = turbo_frame_tag "#{dom_id(task)}_frame" do
     .task-card__body
       p.task-card__title = task.title

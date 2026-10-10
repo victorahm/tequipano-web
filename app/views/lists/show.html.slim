@@ -31,7 +31,7 @@ section
         = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true
       = f.button class: "btn btn--primary", title: "Add task", aria: { label: "Add task" } do
         = ui_icon :new
-  ul.task-list id="tasks"
+  ul.task-list id="tasks" data-controller="task-list" data-task-list-reorder-url-value=reorder_list_tasks_path(@list) data-action="dragover->task-list#dragover drop->task-list#drop"
     - active_tasks = @tasks.reject(&:done?)
     - done_tasks = @tasks.select(&:done?)
     - if @tasks.empty?
@@ -42,7 +42,7 @@ section
     - elsif active_tasks.empty?
       li.task-list__empty No pending tasks.
     - active_tasks.each do |task|
-      = render "tasks/task", task: task
+      = render "tasks/task", task: task, draggable: true
   - if done_tasks.any?
     details.task-done
       summary.task-done__summary = "Done (#{done_tasks.size})"

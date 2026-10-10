@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resources :lists do
-    resources :tasks
+    resources :tasks do
+      patch :reorder, on: :collection
+    end
   end
 
   resources :tasks, only: [ :index ]

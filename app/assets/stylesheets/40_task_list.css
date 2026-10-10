@@ -121,6 +121,11 @@
   cursor: grabbing;
 }
 
+.task-card__handle svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 .task-card__body {
   flex: 1 1 auto;
   min-width: 0;

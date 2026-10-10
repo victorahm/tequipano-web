@@ -430,4 +430,81 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "ul#tasks .task-list__empty"
     assert_select "ul#tasks li.task-card", 0
   end
+
+  test "list show renders draggable task cards with a handle" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "ul#tasks[data-controller=?]", "task-list"
+    assert_select "ul#tasks[data-task-list-reorder-url-value=?]", reorder_list_tasks_path(@list)
+    assert_select "ul#tasks li.task-card[draggable=true][data-task-id=?]", @task.id.to_s
+    assert_select "ul#tasks li.task-card .task-card__handle svg", 1
+  end
+
+  test "done section cards are not draggable" do
+    @task.update_columns(status: "done", completed_at: Time.current)
+
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "details.task-done li.task-card[draggable=true]", 0
+    assert_select "details.task-done .task-card__handle", 0
+  end
+
+  test "tasks index cards are not draggable" do
+    get tasks_url
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card[draggable=true]", 0
+    assert_select "ul#tasks .task-card__handle", 0
+  end
+
+  test "reorder updates task positions within the list" do
+    second = @list.tasks.create!(title: "Second task", user: @current_user, status: "todo", position: 9)
+
+    patch reorder_list_tasks_url(@list), params: { task_ids: [ second.id, @task.id ] }
+
+    assert_redirected_to list_url(@list)
+    assert_equal 0, second.reload.position
+    assert_equal 1, @task.reload.position
+  end
+
+  test "reorder as json responds with no content" do
+    second = @list.tasks.create!(title: "Second task", user: @current_user, status: "todo", position: 9)
+
+    patch reorder_list_tasks_url(@list, format: :json), params: { task_ids: [ @task.id, second.id ] }
+
+    assert_response :no_content
+    assert_equal 0, @task.reload.position
+    assert_equal 1, second.reload.position
+  end
+
+  test "reorder ignores tasks from other lists" do
+    @task.update_columns(position: 5)
+
+    patch reorder_list_tasks_url(@list), params: { task_ids: [ @other_task.id, @task.id ] }
+
+    assert_redirected_to list_url(@list)
+    assert_equal 1, @task.reload.position
+    assert_equal 1, @other_task.reload.position
+  end
+
+  test "reorder renders tasks in the new order on the next visit" do
+    second = @list.tasks.create!(title: "Second task", user: @current_user, status: "todo", position: 9)
+
+    patch reorder_list_tasks_url(@list), params: { task_ids: [ second.id, @task.id ] }
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 2 do |cards|
+      assert_match second.title, cards.first.text
+      assert_match @task.title, cards.last.text
+    end
+  end
+
+  test "reorder of another user's list returns not found" do
+    patch reorder_list_tasks_url(@other_list), params: { task_ids: [ @other_task.id ] }
+
+    assert_response :not_found
+  end
 end

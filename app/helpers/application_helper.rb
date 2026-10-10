@@ -21,6 +21,14 @@ module ApplicationHelper
     ],
     done: [
       "M20 6 9 17l-5-5"
+    ],
+    drag: [
+      "M9 5h.01",
+      "M9 12h.01",
+      "M9 19h.01",
+      "M15 5h.01",
+      "M15 12h.01",
+      "M15 19h.01"
     ]
   }.freeze
 
