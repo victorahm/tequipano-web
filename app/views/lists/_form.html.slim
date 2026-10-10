@@ -1,0 +1,20 @@
+= form_with model: list, class: "form" do |f|
+  .form__group class=("form__group--error" if list.errors[:name].any?)
+    = f.label :name, class: "form__label form__label--required"
+    = f.text_field :name, class: "form__input", placeholder: "e.g. Inbox"
+    - list.errors.full_messages_for(:name).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if list.errors[:color].any?)
+    = f.label :color, class: "form__label form__label--required"
+    = f.color_field :color, class: "form__input"
+    - list.errors.full_messages_for(:color).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if list.errors[:position].any?)
+    = f.label :position, class: "form__label form__label--required"
+    = f.number_field :position, class: "form__input", min: 0
+    span.form__hint Lower numbers are shown first.
+    - list.errors.full_messages_for(:position).each do |message|
+      span.form__error = message
+  .form__row
+    = f.submit(list.persisted? ? "Update list" : "Create list", class: "btn btn--primary")
+    = link_to "Cancel", list.persisted? ? list_path(list) : lists_path, class: "btn btn--secondary"

@@ -1,0 +1,5 @@
+.app-main__header
+  h1.app-main__title = "Edit #{@list.name}"
+  = link_to "Back", list_path(@list), class: "btn btn--secondary"
+
+= render "form", list: @list

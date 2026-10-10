@@ -1,4 +1,6 @@
 class List < ApplicationRecord
+  DEFAULT_COLOR = "#2f6df6"
+
   belongs_to :user
   has_many :tasks, dependent: :destroy
 
