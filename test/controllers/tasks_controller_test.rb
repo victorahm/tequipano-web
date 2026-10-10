@@ -200,10 +200,11 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get edit_list_task_url(@list, @task)
 
     assert_response :success
-    assert_select "select[name='task[status]'] option", 2
+    assert_select "select[name='task[status]'] option", 3
     assert_select "select[name='task[status]'] option[value=todo]"
     assert_select "select[name='task[status]'] option[value=doing]"
-    assert_select "select[name='task[status]'] option[value=done]", 0
+    assert_select "select[name='task[status]'] option[value=done]"
+    assert_select "select[name='task[status]'] option[value=paused]", 0
   end
 
   test "edit of another user's task returns not found" do
@@ -232,8 +233,17 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_equal "doing", @task.reload.status
   end
 
-  test "update rejects an invalid status transition" do
+  test "update can mark a task as done from todo" do
     patch list_task_url(@list, @task), params: { task: { status: "done" } }
+
+    assert_redirected_to list_url(@list)
+    @task.reload
+    assert_equal "done", @task.status
+    assert_not_nil @task.completed_at
+  end
+
+  test "update rejects an invalid status transition" do
+    patch list_task_url(@list, @task), params: { task: { status: "paused" } }
 
     assert_response :unprocessable_content
     assert_equal "todo", @task.reload.status
@@ -316,7 +326,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "form[action=?] .form__row--bottom", list_tasks_path(@list) do
       assert_select "input[name=?]", "task[title]"
-      assert_select "input[type=?][value=?]", "submit", "Add task"
+      assert_select "button[type=?]", "submit"
+      assert_select "button svg", 1
     end
   end
 
@@ -336,6 +347,54 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "ul#tasks a[href=?] svg", edit_list_task_path(@list, @task)
     assert_select "ul#tasks a[aria-label=?] svg", "Edit #{@task.title}"
     assert_select "ul#tasks a[aria-label=?] svg", "Delete #{@task.title}"
+  end
+
+  test "task cards render a mark as done button" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "form[action=?] button svg", list_task_path(@list, @task, task: { status: "done" })
+    assert_select "form[action=?] input[name=?][value=?]", list_task_path(@list, @task, task: { status: "done" }), "_method", "patch"
+    assert_select "form[action=?] button[aria-label=?]", list_task_path(@list, @task, task: { status: "done" }), "Mark #{@task.title} as done"
+  end
+
+  test "list show moves done tasks to a collapsible section" do
+    @task.update_columns(status: "done", completed_at: Time.current)
+
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "details.task-done summary", /Done \(1\)/
+    assert_select "details.task-done ul.task-list--done li.task-card", 1
+    assert_select "details.task-done li.task-card", text: /#{Regexp.escape(@task.title)}/
+    assert_select "ul#tasks li.task-card", 0
+    assert_select "ul#tasks .task-list__empty"
+  end
+
+  test "list show keeps open tasks out of the done section" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "details.task-done", 0
+    assert_select "ul#tasks li.task-card", 1
+  end
+
+  test "done tasks do not render a mark as done button" do
+    @task.update_columns(status: "done", completed_at: Time.current)
+
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "details.task-done form", 0
+  end
+
+  test "mark as done from the card completes the task" do
+    patch list_task_url(@list, @task, task: { status: "done" })
+
+    assert_redirected_to list_url(@list)
+    @task.reload
+    assert_equal "done", @task.status
+    assert_not_nil @task.completed_at
   end
 
   test "show renders the due date" do

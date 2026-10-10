@@ -18,6 +18,9 @@ module ApplicationHelper
       "M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6",
       "M10 11v6",
       "M14 11v6"
+    ],
+    done: [
+      "M20 6 9 17l-5-5"
     ]
   }.freeze
 

@@ -2,11 +2,12 @@ class Task < ApplicationRecord
   # Allowed transitions per the state machine documented in the README:
   #
   #   todo → doing → done
+  #   todo → done (direct completion)
   #   doing → paused → doing
   #   doing → blocked → doing
   #   done → todo (reopened)
   STATUS_TRANSITIONS = {
-    "todo" => %w[ doing ],
+    "todo" => %w[ doing done ],
     "doing" => %w[ done paused blocked ],
     "paused" => %w[ doing ],
     "blocked" => %w[ doing ],

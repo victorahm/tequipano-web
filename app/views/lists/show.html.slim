@@ -29,12 +29,23 @@ section
       .form__group
         = f.label :title, "Quick add", class: "form__label"
         = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true
-      = f.submit "Add task", class: "btn btn--primary"
+      = f.button class: "btn btn--primary", title: "Add task", aria: { label: "Add task" } do
+        = ui_icon :new
   ul.task-list id="tasks"
+    - active_tasks = @tasks.reject(&:done?)
+    - done_tasks = @tasks.select(&:done?)
     - if @tasks.empty?
       li.task-list__empty
         | This list has no tasks yet.
         = " "
         = link_to "Create the first task", new_list_task_path(@list)
-    - @tasks.each do |task|
+    - elsif active_tasks.empty?
+      li.task-list__empty No pending tasks.
+    - active_tasks.each do |task|
       = render "tasks/task", task: task
+  - if done_tasks.any?
+    details.task-done
+      summary.task-done__summary = "Done (#{done_tasks.size})"
+      ul.task-list.task-list--done
+        - done_tasks.each do |task|
+          = render "tasks/task", task: task

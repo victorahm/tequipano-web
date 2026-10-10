@@ -32,9 +32,14 @@ class TaskTest < ActiveSupport::TestCase
     assert_equal %w[ done doing paused blocked ].sort, @task.allowed_next_statuses.sort
   end
 
+  test "allowed_next_statuses includes done for a todo task" do
+    assert_equal %w[ doing done todo ].sort, @task.allowed_next_statuses.sort
+  end
+
   test "allows the documented status transitions" do
     [
       %w[ todo doing ],
+      %w[ todo done ],
       %w[ doing done ],
       %w[ doing paused ],
       %w[ doing blocked ],
@@ -52,7 +57,6 @@ class TaskTest < ActiveSupport::TestCase
 
   test "rejects status transitions outside the state machine" do
     [
-      %w[ todo done ],
       %w[ todo paused ],
       %w[ todo blocked ],
       %w[ done doing ],

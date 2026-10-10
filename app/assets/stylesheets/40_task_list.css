@@ -25,6 +25,28 @@
   margin-bottom: var(--space-4);
 }
 
+/* Collapsible done section */
+.task-done {
+  margin-top: var(--space-4);
+}
+
+.task-done__summary {
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.task-list--done {
+  margin-top: var(--space-2);
+}
+
+.task-list--done .task-card {
+  opacity: 0.7;
+  background-color: var(--color-surface-alt);
+}
+
 .task-list__title {
   display: flex;
   align-items: center;
