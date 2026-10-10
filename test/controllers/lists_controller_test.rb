@@ -40,6 +40,21 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ @list.id ], payload.map { |list| list["id"] }
   end
 
+  test "side menu shows a submenu with the current user's lists" do
+    get lists_url
+
+    assert_response :success
+    assert_select "aside .side-menu__subnav li a", 1
+    assert_select "aside .side-menu__subnav a[href=?]", list_path(@list)
+  end
+
+  test "side menu marks the open list in the submenu" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select ".side-menu__subnav a[href=?].is-active", list_path(@list)
+  end
+
   test "show renders the current user's list" do
     get list_url(@list)
 

@@ -31,7 +31,15 @@ html
           p.side-menu__section Menu
           ul.side-menu__nav
             li = link_to "Dashboard", root_path, class: class_names("side-menu__link", "is-active": controller_name == "pages")
-            li = link_to "Lists", lists_path, class: class_names("side-menu__link", "is-active": controller_name == "lists")
+            li
+              = link_to "Lists", lists_path, class: class_names("side-menu__link", "is-active": controller_name == "lists")
+              - lists = current_user.lists.order(:position, :id)
+              - if lists.any?
+                ul.side-menu__subnav
+                  - lists.each do |list|
+                    li = link_to list_path(list), class: class_names("side-menu__link", "side-menu__link--sub", "is-active": @list == list) do
+                      span.task-list__accent style="--accent: #{list.color}"
+                      = list.name
             li = link_to "Tasks", "#", class: "side-menu__link"
             li = link_to "Profile", "#", class: "side-menu__link"
           .side-menu__footer
