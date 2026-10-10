@@ -1,0 +1,169 @@
+/*
+ * Draggable task lists: list container, task cards, drag handles and
+ * drag-and-drop state classes toggled by the (future) Stimulus controller.
+ */
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task-list__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.task-list__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.task-list__accent {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--radius-full);
+  background-color: var(--accent, var(--accent-default));
+}
+
+.task-list__count {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.task-list__empty {
+  padding: var(--space-5);
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Task card */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast),
+    border-color var(--transition-fast), opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.task-card:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+  box-shadow: var(--shadow-md);
+}
+
+.task-card__handle {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: grab;
+  touch-action: none;
+}
+
+.task-card__handle:hover {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+.task-card__handle:active {
+  cursor: grabbing;
+}
+
+.task-card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.task-card__title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.task-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.task-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task-card__tag {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.task-card__actions {
+  margin-left: auto;
+}
+
+.task-card--done .task-card__title {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+/* Drag and drop states */
+.task-list.is-drag-over {
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.task-card.is-dragging {
+  opacity: 0.5;
+  border-style: dashed;
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.01);
+}
+
+.task-card.is-drop-target {
+  border-color: var(--color-primary);
+  border-style: dashed;
+}
+
+.task-list__placeholder {
+  height: 3rem;
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-alt);
+}

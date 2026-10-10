@@ -22,4 +22,24 @@ html
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = javascript_importmap_tags
   body
-    = yield
+    div.app-shell
+      aside.app-sidebar
+        nav.side-menu aria-label="Main navigation"
+          a.side-menu__brand href="/"
+            span.side-menu__logo TQ
+            span Tequipano
+          p.side-menu__section Menu
+          ul.side-menu__nav
+            li = link_to "Dashboard", "#", class: "side-menu__link is-active"
+            li = link_to "Lists", "#", class: "side-menu__link"
+            li = link_to "Tasks", "#", class: "side-menu__link"
+            li = link_to "Profile", "#", class: "side-menu__link"
+          .side-menu__footer
+            a.user-profile href="#"
+              span.user-profile__avatar
+                | VH
+              .user-profile__info
+                p.user-profile__name Victor Herrera
+                p.user-profile__email user@tequipano.test
+      main.app-main
+        = yield

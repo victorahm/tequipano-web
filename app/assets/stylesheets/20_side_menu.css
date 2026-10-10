@@ -1,0 +1,120 @@
+/*
+ * Side menu: brand, navigation and pinned user profile.
+ */
+
+.side-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-4) var(--space-3);
+  gap: var(--space-4);
+}
+
+.side-menu__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.side-menu__brand:hover {
+  text-decoration: none;
+}
+
+.side-menu__logo {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+.side-menu__section {
+  margin: var(--space-2) 0 0;
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.side-menu__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.side-menu__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.side-menu__link:hover {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.side-menu__link.is-active,
+.side-menu__link[aria-current="page"] {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.side-menu__icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  text-align: center;
+}
+
+.side-menu__count {
+  margin-left: auto;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.side-menu__link.is-active .side-menu__count {
+  background-color: rgb(255 255 255 / 0.2);
+  color: inherit;
+}
+
+.side-menu__footer {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+@media (max-width: 47.99rem) {
+  .side-menu__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .side-menu__footer {
+    margin-top: var(--space-3);
+  }
+}
