@@ -138,6 +138,11 @@
   margin-left: auto;
 }
 
+/* Task cards embed a Turbo Frame for inline editing; keep the card layout */
+.task-card turbo-frame {
+  display: contents;
+}
+
 .task-card--done .task-card__title {
   text-decoration: line-through;
   color: var(--color-text-muted);

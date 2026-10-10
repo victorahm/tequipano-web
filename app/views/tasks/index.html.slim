@@ -1,0 +1,11 @@
+.app-main__header
+  h1.app-main__title Tasks
+
+ul.task-list id="tasks"
+  - if @tasks.empty?
+    li.task-list__empty
+      | You have no tasks yet.
+      = " "
+      = link_to "Go to your lists", lists_path
+  - @tasks.each do |task|
+    = render "tasks/task", task: task, show_list: true

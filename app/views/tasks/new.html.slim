@@ -1,0 +1,5 @@
+.app-main__header
+  h1.app-main__title = "New task in #{@list.name}"
+  = link_to "Back to list", list_path(@list), class: "btn btn--secondary"
+
+= render "form", task: @task, list: @list

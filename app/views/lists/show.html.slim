@@ -15,4 +15,23 @@ section
     = " #{@list.position}"
   p
     strong Tasks:
-    = " #{pluralize(@list.tasks.size, "task")}"
+    = " #{pluralize(@tasks.size, "task")}"
+
+section
+  .task-list__header
+    h2.task-list__title Tasks
+    = link_to "New task", new_list_task_path(@list), class: "btn btn--primary btn--sm"
+  = form_with model: [ @list, @new_task ], class: "form" do |f|
+    .form__group
+      = f.label :title, "Quick add", class: "form__label"
+      = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true
+    .form__row
+      = f.submit "Add task", class: "btn btn--primary btn--sm"
+  ul.task-list id="tasks"
+    - if @tasks.empty?
+      li.task-list__empty
+        | This list has no tasks yet.
+        = " "
+        = link_to "Create the first task", new_list_task_path(@list)
+    - @tasks.each do |task|
+      = render "tasks/task", task: task

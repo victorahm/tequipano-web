@@ -1,0 +1,26 @@
+= form_with model: [ list, task ], class: "form", data: { turbo_frame: "_top" } do |f|
+  .form__group class=("form__group--error" if task.errors[:title].any?)
+    = f.label :title, class: "form__label form__label--required"
+    = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes"
+    - task.errors.full_messages_for(:title).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if task.errors[:description].any?)
+    = f.label :description, class: "form__label"
+    = f.text_area :description, class: "form__textarea", rows: 4, placeholder: "Optional details"
+    - task.errors.full_messages_for(:description).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if task.errors[:status].any?)
+    = f.label :status, class: "form__label"
+    = f.select :status, task.allowed_next_statuses.map { |status| [ status.humanize, status ] }, {}, class: "form__select"
+    span.form__hint = task.new_record? ? "New tasks usually start as To do." : "Only valid next states are available."
+    - task.errors.full_messages_for(:status).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if task.errors[:position].any?)
+    = f.label :position, class: "form__label"
+    = f.number_field :position, class: "form__input", min: 0
+    span.form__hint Lower numbers are shown first.
+    - task.errors.full_messages_for(:position).each do |message|
+      span.form__error = message
+  .form__row
+    = f.submit(task.persisted? ? "Update task" : "Create task", class: "btn btn--primary")
+    = link_to "Cancel", list_path(list), class: "btn btn--secondary", data: { turbo_frame: "_top" }

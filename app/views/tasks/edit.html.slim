@@ -1,0 +1,7 @@
+.app-main__header
+  h1.app-main__title = "Edit #{@task.title}"
+  = link_to "Back to list", list_path(@list), class: "btn btn--secondary"
+
+= turbo_frame_tag "#{dom_id(@task)}_frame" do
+  .task-card__body
+    = render "form", task: @task, list: @list
