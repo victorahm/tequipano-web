@@ -20,6 +20,11 @@
   margin-bottom: var(--space-2);
 }
 
+/* Space between the quick add form and the task list below it */
+.task-quick-add {
+  margin-bottom: var(--space-4);
+}
+
 .task-list__title {
   display: flex;
   align-items: center;

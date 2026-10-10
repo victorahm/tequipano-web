@@ -316,9 +316,15 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "form[action=?] .form__row--bottom", list_tasks_path(@list) do
       assert_select "input[name=?]", "task[title]"
-      assert_select "input[name=?]", "task[due_date]"
       assert_select "input[type=?][value=?]", "submit", "Add task"
     end
+  end
+
+  test "list show quick add form has no due date field" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "form[action='#{list_tasks_path(@list)}'] input[name='task[due_date]']", 0
   end
 
   test "task cards use icon action buttons" do

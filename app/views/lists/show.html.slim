@@ -24,14 +24,11 @@ section
     h2.task-list__title Tasks
     = link_to new_list_task_path(@list), class: "btn btn--primary btn--sm", title: "New task", aria: { label: "New task" } do
       = ui_icon :new
-  = form_with model: [ @list, @new_task ], class: "form" do |f|
+  = form_with model: [ @list, @new_task ], class: "form task-quick-add" do |f|
     .form__row.form__row--bottom
       .form__group
         = f.label :title, "Quick add", class: "form__label"
         = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true
-      .form__group
-        = f.label :due_date, class: "form__label"
-        = f.date_field :due_date, class: "form__input"
       = f.submit "Add task", class: "btn btn--primary"
   ul.task-list id="tasks"
     - if @tasks.empty?
