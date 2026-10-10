@@ -1,0 +1,18 @@
+.app-main__header
+  h1.app-main__title = @list.name
+  .form__row
+    = link_to "Edit", edit_list_path(@list), class: "btn btn--secondary"
+    = link_to "Delete", list_path(@list), class: "btn btn--danger", data: { turbo_method: :delete, turbo_confirm: "Delete \"#{@list.name}\"? Its tasks will be deleted too." }
+    = link_to "Back to lists", lists_path, class: "btn btn--ghost"
+
+section
+  h2 Details
+  p.task-list__title
+    span.task-list__accent style="--accent: #{@list.color}"
+    = @list.color
+  p
+    strong Position:
+    = " #{@list.position}"
+  p
+    strong Tasks:
+    = " #{pluralize(@list.tasks.size, "task")}"

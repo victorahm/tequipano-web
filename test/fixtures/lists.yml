@@ -1,11 +1,11 @@
 one:
   user: one
   name: Inbox
-  color: #1E90FF
+  color: "#1E90FF"
   position: 1
 
 two:
   user: two
   name: Todo
-  color: #32CD32
+  color: "#32CD32"
   position: 1

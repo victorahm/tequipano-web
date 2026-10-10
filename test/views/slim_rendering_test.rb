@@ -2,6 +2,7 @@ require "test_helper"
 
 class SlimRenderingTest < ActionView::TestCase
   setup do
+    controller.class.include CurrentUser
     controller.class.view_paths = [
       Rails.root.join("test/fixtures/templates"),
       Rails.root.join("app/views")

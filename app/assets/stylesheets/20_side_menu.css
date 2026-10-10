@@ -108,10 +108,31 @@
   border-top: var(--border-width) solid var(--color-border);
 }
 
+.side-menu__subnav {
+  list-style: none;
+  margin: var(--space-1) 0;
+  padding: 0 0 0 var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.side-menu__link--sub {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-3);
+}
+
 @media (max-width: 47.99rem) {
   .side-menu__nav {
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .side-menu__subnav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    padding-left: var(--space-2);
   }
 
   .side-menu__footer {

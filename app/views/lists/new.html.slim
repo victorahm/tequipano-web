@@ -1,0 +1,5 @@
+.app-main__header
+  h1.app-main__title New list
+  = link_to "Back to lists", lists_path, class: "btn btn--secondary"
+
+= render "form", list: @list
