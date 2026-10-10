@@ -15,6 +15,10 @@
     span.form__hint = task.new_record? ? "New tasks usually start as To do." : "Only valid next states are available."
     - task.errors.full_messages_for(:status).each do |message|
       span.form__error = message
+  .form__group
+    = f.label :due_date, class: "form__label"
+    = f.date_field :due_date, class: "form__input"
+    span.form__hint Optional.
   .form__group class=("form__group--error" if task.errors[:position].any?)
     = f.label :position, class: "form__label"
     = f.number_field :position, class: "form__input", min: 0

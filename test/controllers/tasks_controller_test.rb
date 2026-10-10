@@ -95,11 +95,12 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", list_tasks_path(@list)
     assert_select "input[name=?]", "task[title]"
     assert_select "select[name=?]", "task[status]"
+    assert_select "input[name=?]", "task[due_date]"
   end
 
   test "create saves a task in the list owned by the current user" do
     assert_difference "Task.count", 1 do
-      post list_tasks_url(@list), params: { task: { title: "Buy milk", description: "Semi-skimmed", status: "todo", position: 7 } }
+      post list_tasks_url(@list), params: { task: { title: "Buy milk", description: "Semi-skimmed", status: "todo", position: 7, due_date: "2026-10-20" } }
     end
 
     created = Task.order(:id).last
@@ -109,6 +110,15 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Buy milk", created.title
     assert_equal "Semi-skimmed", created.description
     assert_equal 7, created.position
+    assert_equal Date.new(2026, 10, 20), created.due_date
+  end
+
+  test "create without a due date leaves it blank" do
+    post list_tasks_url(@list), params: { task: { title: "No deadline" } }
+
+    created = Task.order(:id).last
+    assert_redirected_to list_url(@list)
+    assert_nil created.due_date
   end
 
   test "create defaults the status to todo and to the next position" do
@@ -203,7 +213,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update changes the task attributes" do
-    patch list_task_url(@list, @task), params: { task: { title: "Renamed", description: "New body", status: "doing", position: 5 } }
+    patch list_task_url(@list, @task), params: { task: { title: "Renamed", description: "New body", status: "doing", position: 5, due_date: "2026-11-01" } }
 
     assert_redirected_to list_url(@list)
     @task.reload
@@ -211,6 +221,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_equal "New body", @task.description
     assert_equal "doing", @task.status
     assert_equal 5, @task.position
+    assert_equal Date.new(2026, 11, 1), @task.due_date
     assert_equal @list, @task.list
   end
 
@@ -297,6 +308,37 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "ul#tasks li.task-card", text: /#{Regexp.escape(@task.title)}/
     assert_select "form[action=?]", list_tasks_path(@list)
     assert_select "input[name=?]", "task[title]"
+  end
+
+  test "list show quick add form puts the submit on the same line as the fields" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "form[action=?] .form__row--bottom", list_tasks_path(@list) do
+      assert_select "input[name=?]", "task[title]"
+      assert_select "input[name=?]", "task[due_date]"
+      assert_select "input[type=?][value=?]", "submit", "Add task"
+    end
+  end
+
+  test "task cards use icon action buttons" do
+    get tasks_url
+
+    assert_response :success
+    assert_select "ul#tasks a[href=?] svg", list_task_path(@list, @task)
+    assert_select "ul#tasks a[aria-label=?] svg", "Show #{@task.title}"
+    assert_select "ul#tasks a[href=?] svg", edit_list_task_path(@list, @task)
+    assert_select "ul#tasks a[aria-label=?] svg", "Edit #{@task.title}"
+    assert_select "ul#tasks a[aria-label=?] svg", "Delete #{@task.title}"
+  end
+
+  test "show renders the due date" do
+    @task.update_columns(due_date: Date.new(2026, 10, 20))
+
+    get list_task_url(@list, @task)
+
+    assert_response :success
+    assert_select "p", text: /October 20, 2026/
   end
 
   test "list show renders the edit link targeting the task frame" do

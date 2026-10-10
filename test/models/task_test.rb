@@ -74,6 +74,20 @@ class TaskTest < ActiveSupport::TestCase
     assert_equal "done", task.status
   end
 
+  test "due date is optional" do
+    task = @list.tasks.build(title: "No deadline", user: @user, position: 2, status: "todo")
+
+    assert task.save
+    assert_nil task.due_date
+  end
+
+  test "due date accepts a date" do
+    task = @list.tasks.build(title: "Deadline", user: @user, position: 2, status: "todo", due_date: Date.new(2026, 10, 20))
+
+    assert task.save
+    assert_equal Date.new(2026, 10, 20), task.reload.due_date
+  end
+
   test "sets completed_at when the task becomes done" do
     @task.update_columns(status: "doing", completed_at: nil)
 

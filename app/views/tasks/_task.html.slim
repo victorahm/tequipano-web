@@ -8,9 +8,15 @@ li.task-card id=dom_id(task) class=("task-card--done" if task.done?)
           = link_to task.list.name, list_path(task.list)
           span ·
         span.badge class="badge--#{task.status}" = task.status
+        - if task.due_date
+          span ·
+          span = "Due #{task.due_date.to_fs(:short)}"
         span ·
         span = "Position #{task.position}"
     .task-card__actions
-      = link_to "Show", list_task_path(task.list, task), class: "btn btn--ghost btn--sm", data: { turbo_frame: "_top" }
-      = link_to "Edit", edit_list_task_path(task.list, task), class: "btn btn--ghost btn--sm", data: { turbo_frame: "#{dom_id(task)}_frame" }
-      = link_to "Delete", list_task_path(task.list, task), class: "btn btn--ghost btn--sm", data: { turbo_method: :delete, turbo_frame: "_top", turbo_confirm: "Delete \"#{task.title}\"?" }
+      = link_to list_task_path(task.list, task), class: "btn btn--ghost btn--sm", title: "Show", aria: { label: "Show #{task.title}" }, data: { turbo_frame: "_top" } do
+        = ui_icon :show
+      = link_to edit_list_task_path(task.list, task), class: "btn btn--ghost btn--sm", title: "Edit", aria: { label: "Edit #{task.title}" }, data: { turbo_frame: "#{dom_id(task)}_frame" } do
+        = ui_icon :edit
+      = link_to list_task_path(task.list, task), class: "btn btn--ghost btn--sm", title: "Delete", aria: { label: "Delete #{task.title}" }, data: { turbo_method: :delete, turbo_frame: "_top", turbo_confirm: "Delete \"#{task.title}\"?" } do
+        = ui_icon :delete

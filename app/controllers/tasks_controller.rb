@@ -68,7 +68,7 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.expect(task: [ :title, :description, :status, :position ])
+    params.expect(task: [ :title, :description, :status, :position, :due_date ])
   end
 
   def next_position
