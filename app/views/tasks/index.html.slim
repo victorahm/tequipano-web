@@ -2,10 +2,20 @@
   h1.app-main__title Tasks
 
 ul.task-list id="tasks"
+  - active_tasks = @tasks.reject(&:done?)
+  - done_tasks = @tasks.select(&:done?)
   - if @tasks.empty?
     li.task-list__empty
       | You have no tasks yet.
       = " "
       = link_to "Go to your lists", lists_path
-  - @tasks.each do |task|
+  - elsif active_tasks.empty?
+    li.task-list__empty No pending tasks.
+  - active_tasks.each do |task|
     = render "tasks/task", task: task, show_list: true
+- if done_tasks.any?
+  details.task-done
+    summary.task-done__summary = "Done (#{done_tasks.size})"
+    ul.task-list.task-list--done
+      - done_tasks.each do |task|
+        = render "tasks/task", task: task, show_list: true

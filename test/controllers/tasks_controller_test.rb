@@ -41,6 +41,42 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "ul#tasks .task-list__empty"
     assert_select "ul#tasks li.task-card", 0
+    assert_select "details.task-done", 0
+  end
+
+  test "index moves done tasks to a collapsible section" do
+    @task.update_columns(status: "done", completed_at: Time.current)
+
+    get tasks_url
+
+    assert_response :success
+    assert_select "details.task-done summary", /Done \(1\)/
+    assert_select "details.task-done ul.task-list--done li.task-card", 1
+    assert_select "details.task-done li.task-card", text: /#{Regexp.escape(@task.title)}/
+    assert_select "details.task-done a[href=?]", list_path(@list)
+    assert_select "ul#tasks li.task-card", 0
+    assert_select "ul#tasks .task-list__empty"
+  end
+
+  test "index keeps open tasks out of the done section" do
+    get tasks_url
+
+    assert_response :success
+    assert_select "details.task-done", 0
+    assert_select "ul#tasks li.task-card", 1
+  end
+
+  test "index shows no pending tasks when every task is done" do
+    Task.where(user: @current_user).find_each do |task|
+      task.update_columns(status: "done", completed_at: Time.current)
+    end
+
+    get tasks_url
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 0
+    assert_select "ul#tasks .task-list__empty", text: /No pending tasks/
+    assert_select "details.task-done ul.task-list--done li.task-card", 1
   end
 
   test "index as json renders only the current user's tasks" do
