@@ -442,6 +442,33 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", text: /October 20, 2026/
   end
 
+  test "show renders a complete button" do
+    get list_task_url(@list, @task)
+
+    assert_response :success
+    assert_select "form[action=?] button svg", list_task_path(@list, @task, task: { status: "done" })
+    assert_select "form[action=?] button[aria-label=?]", list_task_path(@list, @task, task: { status: "done" }), "Complete #{@task.title}"
+    assert_select "form[action=?] input[name=?][value=?]", list_task_path(@list, @task, task: { status: "done" }), "_method", "patch"
+  end
+
+  test "complete button marks the task as done" do
+    patch list_task_url(@list, @task, task: { status: "done" })
+
+    assert_redirected_to list_url(@list)
+    @task.reload
+    assert_equal "done", @task.status
+    assert_not_nil @task.completed_at
+  end
+
+  test "show does not render a complete button for a done task" do
+    @task.update_columns(status: "done", completed_at: Time.current)
+
+    get list_task_url(@list, @task)
+
+    assert_response :success
+    assert_select "form[action=?]", list_task_path(@list, @task, task: { status: "done" }), 0
+  end
+
   test "list show renders the edit link targeting the task frame" do
     get list_url(@list)
 
