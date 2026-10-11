@@ -28,7 +28,7 @@ section
     .form__row.form__row--bottom
       .form__group
         = f.label :title, "Quick add", class: "form__label"
-        = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true
+        = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true, autofocus: true, data: { controller: "autofocus" }
       = f.button class: "btn btn--primary", title: "Add task", aria: { label: "Add task" } do
         = ui_icon :new
   ul.task-list id="tasks" data-controller="task-list" data-task-list-reorder-url-value=reorder_list_tasks_path(@list) data-action="dragover->task-list#dragover drop->task-list#drop"

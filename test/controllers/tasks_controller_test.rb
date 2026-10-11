@@ -374,6 +374,14 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action='#{list_tasks_path(@list)}'] input[name='task[due_date]']", 0
   end
 
+  test "list show quick add title field is focused on page load" do
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "form[action=?] input[name=?][autofocus=autofocus]", list_tasks_path(@list), "task[title]"
+    assert_select "form[action=?] input[name=?][data-controller=?]", list_tasks_path(@list), "task[title]", "autofocus"
+  end
+
   test "task cards use icon action buttons" do
     get tasks_url
 
