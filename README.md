@@ -38,6 +38,7 @@
 
 ```
 todo → doing → done
+todo → done (direct completion)
 doing → paused → doing
 doing → blocked → doing
 done → todo (reopened)

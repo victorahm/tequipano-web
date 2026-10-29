@@ -1,0 +1,35 @@
+.app-main__header
+  h1.app-main__title = @task.title
+  .form__row
+    - unless @task.done?
+      = button_to list_task_path(@list, @task, task: { status: :done }), method: :patch, class: "btn btn--primary", title: "Complete", aria: { label: "Complete #{@task.title}" } do
+        = ui_icon :done
+    = link_to edit_list_task_path(@list, @task), class: "btn btn--secondary", title: "Edit", aria: { label: "Edit #{@task.title}" } do
+      = ui_icon :edit
+    = link_to list_task_path(@list, @task), class: "btn btn--danger", title: "Delete", aria: { label: "Delete #{@task.title}" }, data: { turbo_method: :delete, turbo_confirm: "Delete \"#{@task.title}\"?" } do
+      = ui_icon :delete
+    = link_to "Back to list", list_path(@list), class: "btn btn--ghost"
+
+section
+  h2 Details
+  p
+    strong List:
+    = " "
+    = link_to @list.name, list_path(@list)
+  p
+    strong Status:
+    = " "
+    span.badge class="badge--#{@task.status}" = @task.status
+  p
+    strong Due date:
+    = " #{@task.due_date ? @task.due_date.to_fs(:long) : "—"}"
+  p
+    strong Position:
+    = " #{@task.position}"
+  p
+    strong Completed at:
+    = " #{@task.completed_at ? @task.completed_at.to_fs(:long) : "—"}"
+  - if @task.description.present?
+    p
+      strong Description:
+    = simple_format(@task.description)

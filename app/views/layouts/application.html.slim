@@ -40,7 +40,7 @@ html
                     li = link_to list_path(list), class: class_names("side-menu__link", "side-menu__link--sub", "is-active": @list == list) do
                       span.task-list__accent style="--accent: #{list.color}"
                       = list.name
-            li = link_to "Tasks", "#", class: "side-menu__link"
+            li = link_to "Tasks", tasks_path, class: class_names("side-menu__link", "is-active": controller_name == "tasks")
             li = link_to "Profile", "#", class: "side-menu__link"
           .side-menu__footer
             a.user-profile href="#"

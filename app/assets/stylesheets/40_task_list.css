@@ -20,6 +20,41 @@
   margin-bottom: var(--space-2);
 }
 
+/* Space between the quick add form and the task list below it */
+.task-quick-add {
+  margin-bottom: var(--space-4);
+}
+
+/* The add button is styled like a small button but must be as tall as
+   the title input: line-height 1.5 x 1rem text + 2 x 0.5rem padding +
+   2 x 1px border */
+.task-quick-add .form__row .btn {
+  height: calc(var(--leading-normal) * var(--text-base) + var(--space-2) * 2 +
+    var(--border-width) * 2);
+}
+
+/* Collapsible done section */
+.task-done {
+  margin-top: var(--space-4);
+}
+
+.task-done__summary {
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.task-list--done {
+  margin-top: var(--space-2);
+}
+
+.task-list--done .task-card {
+  opacity: 0.7;
+  background-color: var(--color-surface-alt);
+}
+
 .task-list__title {
   display: flex;
   align-items: center;
@@ -94,6 +129,11 @@
   cursor: grabbing;
 }
 
+.task-card__handle svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 .task-card__body {
   flex: 1 1 auto;
   min-width: 0;
@@ -135,7 +175,22 @@
 }
 
 .task-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
   margin-left: auto;
+}
+
+/* button_to wraps the button in a <form>; dissolve it so the button
+   lines up with the other action links */
+.task-card__actions .task-card__actions-form {
+  display: contents;
+}
+
+/* Task cards embed a Turbo Frame for inline editing; keep the card layout */
+.task-card turbo-frame {
+  display: contents;
 }
 
 .task-card--done .task-card__title {

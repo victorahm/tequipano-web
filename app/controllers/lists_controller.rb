@@ -6,6 +6,8 @@ class ListsController < ApplicationController
   end
 
   def show
+    @tasks = @list.tasks.ordered
+    @new_task = @list.tasks.build
   end
 
   def new

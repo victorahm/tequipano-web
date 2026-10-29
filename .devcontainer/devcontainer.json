@@ -32,9 +32,8 @@
   // Configure tool-specific properties.
   // "customizations": {},
 
-  // Uncomment to connect as root instead. More info: https://containers.dev/implementors/json_reference/#remoteUser.
-  // "remoteUser": "root",
-
+  // Connect as the non-root user created in .devcontainer/Dockerfile.
+  "remoteUser": "vscode",
 
   // Use 'postCreateCommand' to run commands after the container is created.
   // Login shell so the mise shims from the mise feature are on PATH.

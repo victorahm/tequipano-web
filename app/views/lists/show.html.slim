@@ -1,8 +1,10 @@
 .app-main__header
   h1.app-main__title = @list.name
   .form__row
-    = link_to "Edit", edit_list_path(@list), class: "btn btn--secondary"
-    = link_to "Delete", list_path(@list), class: "btn btn--danger", data: { turbo_method: :delete, turbo_confirm: "Delete \"#{@list.name}\"? Its tasks will be deleted too." }
+    = link_to edit_list_path(@list), class: "btn btn--secondary", title: "Edit", aria: { label: "Edit #{@list.name}" } do
+      = ui_icon :edit
+    = link_to list_path(@list), class: "btn btn--danger", title: "Delete", aria: { label: "Delete #{@list.name}" }, data: { turbo_method: :delete, turbo_confirm: "Delete \"#{@list.name}\"? Its tasks will be deleted too." } do
+      = ui_icon :delete
     = link_to "Back to lists", lists_path, class: "btn btn--ghost"
 
 section
@@ -11,8 +13,34 @@ section
     span.task-list__accent style="--accent: #{@list.color}"
     = @list.color
   p
-    strong Position:
-    = " #{@list.position}"
-  p
     strong Tasks:
-    = " #{pluralize(@list.tasks.size, "task")}"
+    = " #{pluralize(@tasks.size, "task")}"
+
+section
+  .task-list__header
+    h2.task-list__title Tasks
+  = form_with model: [ @list, @new_task ], class: "form task-quick-add" do |f|
+    .form__row.form__row--bottom
+      .form__group
+        = f.label :title, "Quick add", class: "form__label"
+        = f.text_field :title, class: "form__input", placeholder: "e.g. Write the release notes", required: true, autofocus: true, data: { controller: "autofocus" }
+      = f.button class: "btn btn--primary", title: "Add task", aria: { label: "Add task" } do
+        = ui_icon :new
+  ul.task-list id="tasks" data-controller="task-list" data-task-list-reorder-url-value=reorder_list_tasks_path(@list) data-action="dragover->task-list#dragover drop->task-list#drop"
+    - active_tasks = @tasks.reject(&:done?)
+    - done_tasks = @tasks.select(&:done?)
+    - if @tasks.empty?
+      li.task-list__empty
+        | This list has no tasks yet.
+        = " "
+        = link_to "Create the first task", new_list_task_path(@list)
+    - elsif active_tasks.empty?
+      li.task-list__empty No pending tasks.
+    - active_tasks.each do |task|
+      = render "tasks/task", task: task, draggable: true
+  - if done_tasks.any?
+    details.task-done
+      summary.task-done__summary = "Done (#{done_tasks.size})"
+      ul.task-list.task-list--done
+        - done_tasks.each do |task|
+          = render "tasks/task", task: task
