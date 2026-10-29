@@ -13,17 +13,12 @@ section
     span.task-list__accent style="--accent: #{@list.color}"
     = @list.color
   p
-    strong Position:
-    = " #{@list.position}"
-  p
     strong Tasks:
     = " #{pluralize(@tasks.size, "task")}"
 
 section
   .task-list__header
     h2.task-list__title Tasks
-    = link_to new_list_task_path(@list), class: "btn btn--primary btn--sm", title: "New task", aria: { label: "New task" } do
-      = ui_icon :new
   = form_with model: [ @list, @new_task ], class: "form task-quick-add" do |f|
     .form__row.form__row--bottom
       .form__group

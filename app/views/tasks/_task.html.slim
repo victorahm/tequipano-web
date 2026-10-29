@@ -20,11 +20,9 @@ li.task-card *{ id: dom_id(task), class: ("task-card--done" if task.done?), drag
         - if task.due_date
           span ·
           span = "Due #{task.due_date.to_fs(:short)}"
-        span ·
-        span = "Position #{task.position}"
     .task-card__actions
       - unless task.done?
-        = button_to list_task_path(task.list, task, task: { status: :done }), method: :patch, class: "btn btn--ghost btn--sm", title: "Mark as done", aria: { label: "Mark #{task.title} as done" } do
+        = button_to list_task_path(task.list, task, task: { status: :done }), method: :patch, form_class: "task-card__actions-form", class: "btn btn--ghost btn--sm", title: "Mark as done", aria: { label: "Mark #{task.title} as done" } do
           = ui_icon :done
       = link_to list_task_path(task.list, task), class: "btn btn--ghost btn--sm", title: "Show", aria: { label: "Show #{task.title}" }, data: { turbo_frame: "_top" } do
         = ui_icon :show

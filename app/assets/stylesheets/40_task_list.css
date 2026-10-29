@@ -25,6 +25,14 @@
   margin-bottom: var(--space-4);
 }
 
+/* The add button is styled like a small button but must be as tall as
+   the title input: line-height 1.5 x 1rem text + 2 x 0.5rem padding +
+   2 x 1px border */
+.task-quick-add .form__row .btn {
+  height: calc(var(--leading-normal) * var(--text-base) + var(--space-2) * 2 +
+    var(--border-width) * 2);
+}
+
 /* Collapsible done section */
 .task-done {
   margin-top: var(--space-4);
@@ -167,7 +175,17 @@
 }
 
 .task-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
   margin-left: auto;
+}
+
+/* button_to wraps the button in a <form>; dissolve it so the button
+   lines up with the other action links */
+.task-card__actions .task-card__actions-form {
+  display: contents;
 }
 
 /* Task cards embed a Turbo Frame for inline editing; keep the card layout */
