@@ -79,12 +79,16 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "details.task-done ul.task-list--done li.task-card", 1
   end
 
-  test "index as json renders only the current user's tasks" do
+  test "index as json returns active and done task lists" do
+    @task.update_columns(status: "done", completed_at: Time.current)
+    active_task = @list.tasks.create!(title: "Still open", user: @current_user, status: "todo", position: 9)
+
     get tasks_url(format: :json)
 
     assert_response :success
     payload = JSON.parse(response.body)
-    assert_equal [ @task.id ], payload.map { |task| task["id"] }
+    assert_equal [ active_task.id ], payload["active"].map { |task| task["id"] }
+    assert_equal [ @task.id ], payload["done"].map { |task| task["id"] }
   end
 
   test "side menu links to the tasks index" do

@@ -4,6 +4,8 @@ class TasksController < ApplicationController
 
   def index
     @tasks = current_user.tasks.includes(:list).ordered
+    @active_tasks = @tasks.reject(&:done?)
+    @done_tasks = @tasks.select(&:done?)
   end
 
   def show
