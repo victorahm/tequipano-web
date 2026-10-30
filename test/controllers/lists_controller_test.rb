@@ -30,6 +30,43 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "ul#lists .task-list__empty"
     assert_select "ul#lists li.task-card", 0
+    assert_select "nav.pagy.series-nav", 0
+  end
+
+  test "index paginates lists in pages of 25 with navigation" do
+    create_extra_lists(25)
+
+    get lists_url
+
+    assert_response :success
+    assert_select "ul#lists li.task-card", 25
+    assert_select "nav.pagy.series-nav[aria-label=?]", "Lists pages"
+    assert_select "nav.pagy.series-nav a[href=?]", "/lists?page=2&limit=25"
+
+    get lists_url(page: 2)
+
+    assert_response :success
+    assert_select "ul#lists li.task-card", 1
+    assert_select "nav.pagy.series-nav a[href=?]", "/lists?page=1&limit=25"
+  end
+
+  test "index renders no navigation when everything fits on one page" do
+    get lists_url
+
+    assert_response :success
+    assert_select "ul#lists li.task-card", 1
+    assert_select "nav.pagy.series-nav", 0
+  end
+
+  test "index renders an empty page beyond the last one without the empty state" do
+    create_extra_lists(25)
+
+    get lists_url(page: 99)
+
+    assert_response :success
+    assert_select "ul#lists li.task-card", 0
+    assert_select "ul#lists .task-list__empty", 0
+    assert_select "nav.pagy.series-nav"
   end
 
   test "index as json renders only the current user's lists" do
@@ -234,4 +271,11 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to lists_url
     assert_not List.exists?(@list.id)
   end
+
+  private
+    def create_extra_lists(count)
+      count.times do |i|
+        List.create!(user: @current_user, name: "Extra list #{i + 1}", color: "#123456", position: 100 + i)
+      end
+    end
 end

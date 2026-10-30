@@ -4,7 +4,7 @@
     = ui_icon :new
 
 ul.task-list id="lists"
-  - if @lists.empty?
+  - if @pagy.count.zero?
     li.task-list__empty
       | You have no lists yet.
       = " "
@@ -25,3 +25,5 @@ ul.task-list id="lists"
           = ui_icon :edit
         = link_to list_path(list), class: "btn btn--ghost btn--sm", title: "Delete", aria: { label: "Delete #{list.name}" }, data: { turbo_method: :delete, turbo_confirm: "Delete \"#{list.name}\"? Its tasks will be deleted too." } do
           = ui_icon :delete
+
+= render "shared/pagination", pagy: @pagy, aria_label: "Lists pages"
