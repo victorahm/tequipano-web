@@ -6,7 +6,8 @@ class ListsController < ApplicationController
   end
 
   def show
-    @tasks = @list.tasks.ordered
+    @pagy, @active_tasks = pagy(:offset, @list.tasks.active.ordered)
+    @done_pagy, @done_tasks = pagy(:offset, @list.tasks.completed.ordered, page_key: "done_page")
     @new_task = @list.tasks.build
   end
 
