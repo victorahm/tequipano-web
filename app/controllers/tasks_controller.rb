@@ -3,9 +3,8 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
 
   def index
-    @tasks = current_user.tasks.includes(:list).ordered
-    @active_tasks = @tasks.reject(&:done?)
-    @done_tasks = @tasks.select(&:done?)
+    @pagy, @active_tasks = pagy(:offset, current_user.tasks.active.includes(:list).ordered)
+    @done_pagy, @done_tasks = pagy(:offset, current_user.tasks.completed.includes(:list).ordered, page_key: "done_page")
   end
 
   def show
@@ -62,10 +61,14 @@ class TasksController < ApplicationController
   def reorder
     task_ids = params.expect(task_ids: []).filter_map { |id| Integer(id, exception: false) }
     tasks = @list.tasks.where(id: task_ids).index_by(&:id)
+    # Keep the new positions inside the range the posted tasks already occupy
+    # (a drag & drop only reorders the tasks visible on the current page, and
+    # must not shuffle the tasks of the other pages).
+    base_position = tasks.values.filter_map(&:position).min.to_i
 
     Task.transaction do
-      task_ids.each_with_index do |id, index|
-        tasks[id]&.update!(position: index)
+      task_ids.filter_map { |id| tasks[id] }.each_with_index do |task, index|
+        task.update!(position: base_position + index)
       end
     end
 

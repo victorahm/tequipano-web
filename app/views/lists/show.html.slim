@@ -14,7 +14,7 @@ section
     = @list.color
   p
     strong Tasks:
-    = " #{pluralize(@tasks.size, "task")}"
+    = " #{@list.tasks.count}"
 
 section
   .task-list__header
@@ -27,20 +27,21 @@ section
       = f.button class: "btn btn--primary", title: "Add task", aria: { label: "Add task" } do
         = ui_icon :new
   ul.task-list id="tasks" data-controller="task-list" data-task-list-reorder-url-value=reorder_list_tasks_path(@list) data-action="dragover->task-list#dragover drop->task-list#drop"
-    - active_tasks = @tasks.reject(&:done?)
-    - done_tasks = @tasks.select(&:done?)
-    - if @tasks.empty?
+    - if @pagy.count.positive?
+      - @active_tasks.each do |task|
+        = render "tasks/task", task: task, draggable: true
+    - elsif @list.tasks.exists?
+      li.task-list__empty No pending tasks.
+    - else
       li.task-list__empty
         | This list has no tasks yet.
         = " "
         = link_to "Create the first task", new_list_task_path(@list)
-    - elsif active_tasks.empty?
-      li.task-list__empty No pending tasks.
-    - active_tasks.each do |task|
-      = render "tasks/task", task: task, draggable: true
-  - if done_tasks.any?
+  = render "shared/pagination", pagy: @pagy, aria_label: "Task pages"
+  - if @done_pagy.count.positive?
     details.task-done
-      summary.task-done__summary = "Done (#{done_tasks.size})"
+      summary.task-done__summary = "Done (#{@done_pagy.count})"
       ul.task-list.task-list--done
-        - done_tasks.each do |task|
+        - @done_tasks.each do |task|
           = render "tasks/task", task: task
+      = render "shared/pagination", pagy: @done_pagy, aria_label: "Done task pages"

@@ -135,6 +135,41 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", edit_list_path(@list)
   end
 
+  test "show paginates active tasks with navigation" do
+    create_tasks(@list, 25)
+
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 25
+    assert_select "nav.pagy.series-nav[aria-label=?]", "Task pages"
+    assert_select "nav.pagy.series-nav a[href=?]", "/lists/#{@list.id}?page=2&limit=25"
+
+    get list_url(@list, page: 2)
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 1
+    assert_select "nav.pagy.series-nav a[href=?]", "/lists/#{@list.id}?page=1&limit=25"
+  end
+
+  test "show paginates the done section independently" do
+    create_tasks(@list, 26, status: "done")
+
+    get list_url(@list)
+
+    assert_response :success
+    assert_select "details.task-done summary", "Done (26)"
+    assert_select "details.task-done ul.task-list li.task-card", 25
+    assert_select "details.task-done nav.pagy.series-nav[aria-label=?]", "Done task pages"
+    assert_select "details.task-done nav.pagy.series-nav a[href=?]", "/lists/#{@list.id}?done_page=2&limit=25"
+
+    get list_url(@list, done_page: 2)
+
+    assert_response :success
+    assert_select "details.task-done ul.task-list li.task-card", 1
+    assert_select "ul#tasks li.task-card", 1
+  end
+
   test "show as json renders the list" do
     get list_url(@list, format: :json)
 
@@ -311,6 +346,12 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
     def create_extra_lists(count)
       count.times do |i|
         List.create!(user: @current_user, name: "Extra list #{i + 1}", color: "#123456", position: 100 + i)
+      end
+    end
+
+    def create_tasks(list, count, status: "todo")
+      count.times do |i|
+        list.tasks.create!(title: "Task #{i + 1}", user: list.user, status: status, position: 100 + i)
       end
     end
 end
