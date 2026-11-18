@@ -9,8 +9,8 @@
 #   end
 
 [
-  { name: "Victor Herrera", email: "victor@tequipano.test" },
-  { name: "Ana Torres", email: "ana@tequipano.test" }
+  { name: "Demo User", email: "demo@tequipano.test" },
+  { name: "Sample User", email: "sample@tequipano.test" }
 ].each do |attributes|
   user = User.find_or_initialize_by(email: attributes[:email])
   user.assign_attributes(attributes.merge(time_zone: "America/Mexico_City"))

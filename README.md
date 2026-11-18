@@ -2,7 +2,14 @@
 
 **Tequipano-Web** is the central application of the Tequipano project: a single monolithic Ruby on Rails application that serves the backend, the server-rendered Hotwire web interface, the versioned JSON API, and the mobile experience (a Progressive Web App).
 
-> **Project Management**: Issues, Kanban board, and workflow for this application are tracked in its Redmine project: <https://redmine.obsidianasystems.com/projects/tequipano-web>
+## Overview
+
+This repository is a full-stack example of a modern Rails 8 monolith. It combines:
+
+- A server-rendered task manager with inline editing, drag-and-drop ordering, pagination, and real-time updates over ActionCable.
+- A versioned JSON API (`/api/v1/`) with bearer-token authentication for CLI and desktop clients.
+- An installable Progressive Web App with offline support.
+- A complete test suite (model, controller, integration, view, and system tests) plus CI with security scanning, linting, and tests.
 
 ## Features
 
@@ -80,7 +87,7 @@ Deployment uses **Kamal 2**. See `config/deploy.yml` and the CI workflow in `.gi
 
 ## Companion Applications
 
-The `/api/v1/` JSON API is consumed by the two companion applications in this repository:
+The `/api/v1/` JSON API is designed to be consumed by two companion projects (maintained as separate repositories):
 
-- **Tequipano-CLI** (`../tequipano-cli/`) — Ruby CLI for humans, scripts, and AI agents.
-- **Tequipano-Desktop** (`../tequipano-desktop/`) — Native Ruby GTK4 / Libadwaita Linux desktop client.
+- **Tequipano-CLI** — Ruby CLI for humans, scripts, and AI agents.
+- **Tequipano-Desktop** — Native Ruby GTK4 / Libadwaita Linux desktop client.
