@@ -2,7 +2,7 @@ class ListsController < ApplicationController
   before_action :set_list, only: %i[ show edit update destroy ]
 
   def index
-    @lists = current_user.lists.includes(:tasks).order(:position, :id)
+    @pagy, @lists = pagy(:offset, current_user.lists.includes(:tasks).order(:position, :id))
   end
 
   def show
