@@ -1,0 +1,47 @@
+/*
+ * Pagination controls rendered by pagy's series_nav
+ * (<nav class="pagy series-nav">). This file must load after the component
+ * stylesheets, hence the 60_ prefix.
+ */
+
+nav.pagy.series-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+nav.pagy.series-nav a,
+nav.pagy.series-nav a[role="link"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 var(--space-2);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  text-decoration: none;
+}
+
+nav.pagy.series-nav a:hover {
+  background-color: var(--color-surface-alt);
+  text-decoration: none;
+}
+
+nav.pagy.series-nav a[aria-disabled="true"] {
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+nav.pagy.series-nav a[aria-current="page"] {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}

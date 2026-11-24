@@ -1,2 +1,2 @@
-Pagy::OPTIONS[:limit] = 20
+Pagy::OPTIONS[:limit] = 25
 Pagy::OPTIONS[:client_limit] = 100

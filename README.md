@@ -23,7 +23,7 @@ This repository is a full-stack example of a modern Rails 8 monolith. It combine
 
 ## Tech Stack
 
-- **Ruby**: 4.0.7
+- **Ruby**: 4.0.10
 - **Rails**: 8.1.3.1
 - **Database**: PostgreSQL 18+
 - **Frontend**: Hotwire (Turbo 8, Stimulus) + Vanilla CSS / Design Tokens
@@ -56,7 +56,7 @@ done → todo (reopened)
 ### Using DevContainers (Recommended)
 
 1. Open this folder in VS Code or Antigravity IDE.
-2. Select **Reopen in Container** when prompted — the DevContainer provisions Ruby 4.0.7, PostgreSQL 18, and the Rails toolchain.
+2. Select **Reopen in Container** when prompted — the DevContainer provisions Ruby 4.0.10, PostgreSQL 18, and the Rails toolchain.
 3. The `postCreateCommand` runs `bin/setup --skip-server` (installs gems and prepares the database).
 4. Start the local server:
    ```bash

@@ -4,7 +4,7 @@
 # slim image for production (Dockerfile at the repo root). Toolchain extras
 # (postgres client, libvips, node/mise) come from the features in devcontainer.json.
 # Make sure RUBY_VERSION matches the ruby version in .ruby-version and mise.toml
-ARG RUBY_VERSION=4.0.7
+ARG RUBY_VERSION=4.0.10
 FROM docker.io/library/ruby:$RUBY_VERSION
 
 # Ensure binding is always 0.0.0.0

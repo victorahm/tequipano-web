@@ -1,6 +1,6 @@
 [tools]
 node = "26.9.0"
-ruby = "4.0.7"
+ruby = "4.0.10"
 
 [tasks.server]
 description = "Start the Rails development server"
