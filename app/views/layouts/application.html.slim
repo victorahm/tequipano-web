@@ -33,13 +33,15 @@ html
             li = link_to "Dashboard", root_path, class: class_names("side-menu__link", "is-active": controller_name == "pages")
             li
               = link_to "Lists", lists_path, class: class_names("side-menu__link", "is-active": controller_name == "lists")
-              - lists = current_user.lists.order(:position, :id)
+              - lists = current_user.lists.order(:position, :id).limit(5)
               - if lists.any?
                 ul.side-menu__subnav
                   - lists.each do |list|
                     li = link_to list_path(list), class: class_names("side-menu__link", "side-menu__link--sub", "is-active": @list == list) do
                       span.task-list__accent style="--accent: #{list.color}"
                       = list.name
+                  - if current_user.lists.order(:position, :id).offset(5).exists?
+                    li = link_to "More lists", lists_path, class: "side-menu__link side-menu__link--sub"
             li = link_to "Tasks", tasks_path, class: class_names("side-menu__link", "is-active": controller_name == "tasks")
             li = link_to "Profile", "#", class: "side-menu__link"
           .side-menu__footer

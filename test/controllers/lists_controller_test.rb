@@ -85,6 +85,41 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
     assert_select "aside .side-menu__subnav a[href=?]", list_path(@list)
   end
 
+  test "side menu shows at most 5 lists in the submenu" do
+    create_extra_lists(5)
+
+    get lists_url
+
+    assert_response :success
+    assert_select "aside .side-menu__subnav a[href^=?]", "/lists/", 5
+    assert_select "aside .side-menu__subnav li a", { count: 1, text: /Extra list 4/ }
+    assert_select "aside .side-menu__subnav li a", { count: 0, text: /Extra list 5/ }
+  end
+
+  test "side menu renders a More lists link when the user has more than 5 lists" do
+    create_extra_lists(5)
+
+    get lists_url
+
+    assert_response :success
+    assert_select "aside .side-menu__subnav li a", { count: 1, text: "More lists", href: lists_path }
+    assert_select "aside .side-menu__subnav a[href=?].is-active", lists_path, count: 0
+  end
+
+  test "side menu does not render a More lists link with 5 or fewer lists" do
+    get lists_url
+
+    assert_response :success
+    assert_select "aside .side-menu__subnav a", { count: 0, text: "More lists" }
+
+    create_extra_lists(4)
+
+    get lists_url
+
+    assert_select "aside .side-menu__subnav a[href^=?]", "/lists/", 5
+    assert_select "aside .side-menu__subnav a", { count: 0, text: "More lists" }
+  end
+
   test "side menu marks the open list in the submenu" do
     get list_url(@list)
 
