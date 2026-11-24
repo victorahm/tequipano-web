@@ -5,7 +5,7 @@ Thanks for your interest in Tequipano-Web. Contributions are welcome.
 ## Getting started
 
 1. Fork the repository and clone your fork.
-2. Open the project in a DevContainer, or install Ruby 4.0.7 and PostgreSQL 18 locally.
+2. Open the project in a DevContainer, or install Ruby 4.0.10 and PostgreSQL 18 locally.
 3. Run `bundle install` and `bin/setup`.
 4. Start the app with `mise run server` and visit `http://localhost:3000`.
 
