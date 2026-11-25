@@ -2,18 +2,20 @@
   h1.app-main__title Tasks
 
 ul.task-list id="tasks"
-  - if @tasks.empty?
+  - if @pagy.count.zero? && @done_pagy.count.zero?
     li.task-list__empty
       | You have no tasks yet.
       = " "
       = link_to "Go to your lists", lists_path
-  - elsif @active_tasks.empty?
+  - elsif @pagy.count.zero?
     li.task-list__empty No pending tasks.
   - @active_tasks.each do |task|
     = render "tasks/task", task: task, show_list: true
-- if @done_tasks.any?
+= render "shared/pagination", pagy: @pagy, aria_label: "Task pages"
+- if @done_pagy.count.positive?
   details.task-done
-    summary.task-done__summary = "Done (#{@done_tasks.size})"
+    summary.task-done__summary = "Done (#{@done_pagy.count})"
     ul.task-list.task-list--done
       - @done_tasks.each do |task|
         = render "tasks/task", task: task, show_list: true
+    = render "shared/pagination", pagy: @done_pagy, aria_label: "Done task pages"

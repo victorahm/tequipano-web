@@ -26,6 +26,40 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, @other_task.title
   end
 
+  test "index paginates active tasks with navigation" do
+    create_extra_tasks(25)
+
+    get tasks_url
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 25
+    assert_select "nav.pagy.series-nav[aria-label=?]", "Task pages"
+    assert_select "nav.pagy.series-nav a[href=?]", "/tasks?page=2&limit=25"
+
+    get tasks_url(page: 2)
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 1
+    assert_select "nav.pagy.series-nav a[href=?]", "/tasks?page=1&limit=25"
+  end
+
+  test "index paginates the done section independently" do
+    create_extra_tasks(26, status: "done")
+
+    get tasks_url
+
+    assert_response :success
+    assert_select "details.task-done summary", "Done (26)"
+    assert_select "details.task-done ul.task-list li.task-card", 25
+    assert_select "details.task-done nav.pagy.series-nav a[href=?]", "/tasks?done_page=2&limit=25"
+
+    get tasks_url(done_page: 2)
+
+    assert_response :success
+    assert_select "details.task-done ul.task-list li.task-card", 1
+    assert_select "ul#tasks li.task-card", 1
+  end
+
   test "index shows the list each task belongs to" do
     get tasks_url
 
@@ -540,8 +574,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     patch reorder_list_tasks_url(@list), params: { task_ids: [ second.id, @task.id ] }
 
     assert_redirected_to list_url(@list)
-    assert_equal 0, second.reload.position
-    assert_equal 1, @task.reload.position
+    assert_equal 1, second.reload.position
+    assert_equal 2, @task.reload.position
   end
 
   test "reorder as json responds with no content" do
@@ -550,8 +584,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     patch reorder_list_tasks_url(@list, format: :json), params: { task_ids: [ @task.id, second.id ] }
 
     assert_response :no_content
-    assert_equal 0, @task.reload.position
-    assert_equal 1, second.reload.position
+    assert_equal 1, @task.reload.position
+    assert_equal 2, second.reload.position
   end
 
   test "reorder ignores tasks from other lists" do
@@ -560,8 +594,32 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     patch reorder_list_tasks_url(@list), params: { task_ids: [ @other_task.id, @task.id ] }
 
     assert_redirected_to list_url(@list)
-    assert_equal 1, @task.reload.position
+    assert_equal 5, @task.reload.position
     assert_equal 1, @other_task.reload.position
+  end
+
+  test "reorder within a page keeps the positions of other pages stable" do
+    bulk = 27.times.map do |i|
+      @list.tasks.create!(title: "Bulk #{i}", user: @current_user, status: "todo", position: 10 + i)
+    end
+
+    # Active order: @task(1), bulk(10..36) => 28 tasks, so page 2 shows the
+    # last three. Drag bulk 26 above bulk 25 within that page.
+    patch reorder_list_tasks_url(@list), params: { task_ids: [ bulk[26].id, bulk[25].id ] }
+
+    assert_equal 1, @task.reload.position
+    assert_equal 34, bulk[24].reload.position
+    assert_equal 35, bulk[26].reload.position
+    assert_equal 36, bulk[25].reload.position
+
+    get list_url(@list, page: 2)
+
+    assert_response :success
+    assert_select "ul#tasks li.task-card", 3 do |cards|
+      assert_match(/Bulk 24/, cards[0].text)
+      assert_match(/Bulk 26/, cards[1].text)
+      assert_match(/Bulk 25/, cards[2].text)
+    end
   end
 
   test "reorder renders tasks in the new order on the next visit" do
@@ -582,4 +640,11 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  private
+    def create_extra_tasks(count, status: "todo")
+      count.times do |i|
+        @list.tasks.create!(title: "Extra task #{i + 1}", user: @current_user, status: status, position: 100 + i)
+      end
+    end
 end
