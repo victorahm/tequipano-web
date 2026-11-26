@@ -1,0 +1,38 @@
+.app-main__header
+  h1.app-main__title Sign up
+
+= form_with model: @user, url: signup_path, class: "form" do |f|
+  .form__group class=("form__group--error" if @user.errors[:name].any?)
+    = f.label :name, "Name", class: "form__label form__label--required"
+    = f.text_field :name, class: "form__input", autofocus: true
+    - @user.errors.full_messages_for(:name).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:email].any?)
+    = f.label :email, "Email", class: "form__label form__label--required"
+    = f.email_field :email, class: "form__input", placeholder: "you@example.com"
+    - @user.errors.full_messages_for(:email).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:time_zone].any?)
+    = f.label :time_zone, "Time zone", class: "form__label form__label--required"
+    = f.text_field :time_zone, class: "form__input", placeholder: "America/Mexico_City"
+    span.form__hint Use a valid IANA time zone name.
+    - @user.errors.full_messages_for(:time_zone).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:password].any?)
+    = f.label :password, "Password", class: "form__label form__label--required"
+    = f.password_field :password, class: "form__input"
+    - @user.errors.full_messages_for(:password).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:password_confirmation].any?)
+    = f.label :password_confirmation, "Confirm password", class: "form__label form__label--required"
+    = f.password_field :password_confirmation, class: "form__input"
+    - @user.errors.full_messages_for(:password_confirmation).each do |message|
+      span.form__error = message
+  .form__row
+    = f.submit "Create account", class: "btn btn--primary"
+    = link_to "Cancel", root_path, class: "btn btn--secondary"
+
+p
+  | Already have an account?
+  = " "
+  = link_to "Log in", login_path

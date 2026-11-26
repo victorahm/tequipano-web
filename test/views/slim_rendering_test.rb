@@ -2,7 +2,10 @@ require "test_helper"
 
 class SlimRenderingTest < ActionView::TestCase
   setup do
-    controller.class.include CurrentUser
+    controller.class.include Authentication
+    user = users(:one)
+    controller.define_singleton_method(:current_user) { user }
+    controller.define_singleton_method(:logged_in?) { true }
     controller.class.view_paths = [
       Rails.root.join("test/fixtures/templates"),
       Rails.root.join("app/views")

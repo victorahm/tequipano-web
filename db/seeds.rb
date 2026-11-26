@@ -8,12 +8,14 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+# The demo owner is an admin so access can be granted from the UI. New accounts
+# created through signup start blocked and must be unblocked by an admin.
 [
-  { name: "Demo User", email: "demo@tequipano.test" },
-  { name: "Sample User", email: "sample@tequipano.test" }
+  { name: "Demo User", email: "demo@tequipano.test", admin: true },
+  { name: "Sample User", email: "sample@tequipano.test", admin: false }
 ].each do |attributes|
   user = User.find_or_initialize_by(email: attributes[:email])
-  user.assign_attributes(attributes.merge(time_zone: "America/Mexico_City"))
+  user.assign_attributes(attributes.merge(time_zone: "America/Mexico_City", blocked: false))
   if user.new_record?
     user.password = "password"
     user.password_confirmation = "password"

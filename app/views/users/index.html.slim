@@ -1,0 +1,28 @@
+.app-main__header
+  h1.app-main__title Users
+  = link_to "New user", new_user_path, class: "btn btn--primary", title: "New user", aria: { label: "New user" }
+
+ul.task-list id="users"
+  - if @pagy.count.zero?
+    li.task-list__empty There are no users yet.
+  - @users.each do |user|
+    li.task-card id=dom_id(user)
+      .task-card__body
+        p.task-card__title = user.name
+        .task-card__meta
+          span = user.email
+          - if user.admin?
+            span.badge.badge--doing admin
+          - if user.blocked?
+            span.badge.badge--blocked blocked
+      .task-card__actions
+        = link_to edit_user_path(user), class: "btn btn--ghost btn--sm", title: "Edit", aria: { label: "Edit #{user.name}" } do
+          = ui_icon :edit
+        - if user.blocked?
+          = button_to "Unblock", unblock_user_path(user), method: :patch, class: "btn btn--ghost btn--sm"
+        - else
+          = button_to "Block", block_user_path(user), method: :patch, class: "btn btn--ghost btn--sm"
+        = link_to user_path(user), class: "btn btn--ghost btn--sm", title: "Delete", aria: { label: "Delete #{user.name}" }, data: { turbo_method: :delete, turbo_confirm: "Delete \"#{user.name}\"? Its lists and tasks will be deleted too." } do
+          = ui_icon :delete
+
+= render "shared/pagination", pagy: @pagy, aria_label: "Users pages"

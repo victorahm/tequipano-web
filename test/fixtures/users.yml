@@ -3,9 +3,13 @@ one:
   email: alice@example.com
   password_digest: <%= BCrypt::Password.create('password') %>
   time_zone: America/Mexico_City
+  admin: false
+  blocked: false
 
 two:
   name: Bob
   email: bob@example.com
   password_digest: <%= BCrypt::Password.create('password') %>
   time_zone: America/Mexico_City
+  admin: true
+  blocked: false

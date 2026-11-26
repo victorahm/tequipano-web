@@ -1,4 +1,3 @@
 class PagesController < ApplicationController
-  def welcome
-  end
+  skip_before_action :require_login, only: :welcome
 end

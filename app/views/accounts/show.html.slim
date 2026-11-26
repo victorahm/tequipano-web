@@ -1,0 +1,16 @@
+.app-main__header
+  h1.app-main__title My account
+  = link_to "Edit account", edit_account_path, class: "btn btn--primary"
+
+section.user-profile.user-profile--card
+  span.user-profile__avatar = user_initials(@user)
+  .user-profile__info
+    p.user-profile__name = @user.name
+    p.user-profile__email = @user.email
+    p.user-profile__meta
+      | Time zone:
+      = " "
+      = @user.time_zone
+
+p
+  = link_to "Change password", edit_account_path
