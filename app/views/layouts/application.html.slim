@@ -28,27 +28,39 @@ html
           a.side-menu__brand href="/"
             span.side-menu__logo TQ
             span Tequipano
-          p.side-menu__section Menu
-          ul.side-menu__nav
-            li = link_to "Dashboard", root_path, class: class_names("side-menu__link", "is-active": controller_name == "pages")
-            li
-              = link_to "Lists", lists_path, class: class_names("side-menu__link", "is-active": controller_name == "lists")
-              - lists = current_user.lists.order(:position, :id).limit(5)
-              - if lists.any?
-                ul.side-menu__subnav
-                  - lists.each do |list|
-                    li = link_to list_path(list), class: class_names("side-menu__link", "side-menu__link--sub", "is-active": @list == list) do
-                      span.task-list__accent style="--accent: #{list.color}"
-                      = list.name
-                  - if current_user.lists.order(:position, :id).offset(5).exists?
-                    li = link_to "More lists", lists_path, class: "side-menu__link side-menu__link--sub"
-            li = link_to "Tasks", tasks_path, class: class_names("side-menu__link", "is-active": controller_name == "tasks")
-            li = link_to "Profile", "#", class: "side-menu__link"
-          .side-menu__footer
-            a.user-profile href="#"
-              span.user-profile__avatar = user_initials(current_user)
-              .user-profile__info
-                p.user-profile__name = current_user.name
-                p.user-profile__email = current_user.email
+          - if logged_in?
+            p.side-menu__section Menu
+            ul.side-menu__nav
+              li = link_to "Dashboard", root_path, class: class_names("side-menu__link", "is-active": controller_name == "pages")
+              li
+                = link_to "Lists", lists_path, class: class_names("side-menu__link", "is-active": controller_name == "lists")
+                - lists = current_user.lists.order(:position, :id).limit(5)
+                - if lists.any?
+                  ul.side-menu__subnav
+                    - lists.each do |list|
+                      li = link_to list_path(list), class: class_names("side-menu__link", "side-menu__link--sub", "is-active": @list == list) do
+                        span.task-list__accent style="--accent: #{list.color}"
+                        = list.name
+                    - if current_user.lists.order(:position, :id).offset(5).exists?
+                      li = link_to "More lists", lists_path, class: "side-menu__link side-menu__link--sub"
+              li = link_to "Tasks", tasks_path, class: class_names("side-menu__link", "is-active": controller_name == "tasks")
+              - if current_user.admin?
+                li = link_to "Users", users_path, class: class_names("side-menu__link", "is-active": controller_name == "users")
+              li = link_to "My account", account_path, class: class_names("side-menu__link", "is-active": controller_name == "account")
+            .side-menu__footer
+              a.user-profile href=account_path
+                span.user-profile__avatar = user_initials(current_user)
+                .user-profile__info
+                  p.user-profile__name = current_user.name
+                  p.user-profile__email = current_user.email
+              = button_to "Log out", logout_path, method: :delete, class: "side-menu__link", form_class: "side-menu__logout"
+          - else
+            p.side-menu__section Account
+            ul.side-menu__nav
+              li = link_to "Welcome", root_path, class: class_names("side-menu__link", "is-active": controller_name == "pages")
+              li = link_to "Log in", login_path, class: class_names("side-menu__link", "is-active": controller_name == "sessions")
+              li = link_to "Sign up", signup_path, class: class_names("side-menu__link", "is-active": controller_name == "registrations")
       main.app-main
+        - flash.each do |type, message|
+          div class="flash flash--#{type}" = message
         = yield

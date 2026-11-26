@@ -4,11 +4,12 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
   TURBO_STREAM_HEADERS = { "ACCEPT" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }.freeze
 
   setup do
-    @current_user = User.order(:id).first
+    @current_user = users(:one)
     @list = List.find_by!(user: @current_user)
     @original_name = @list.name
     @other_list = List.where.not(user: @current_user).first
     @other_user = @other_list.user
+    log_in_as @current_user
   end
 
   test "index renders only the current user's lists" do

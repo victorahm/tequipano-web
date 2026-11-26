@@ -9,6 +9,20 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  get "signup", to: "registrations#new", as: :signup
+  post "signup", to: "registrations#create"
+
+  get "login", to: "sessions#new", as: :login
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy", as: :logout
+
+  resource :account, only: %i[ show edit update ]
+
+  resources :users, only: %i[ index new create edit update destroy ] do
+    patch :block, on: :member
+    patch :unblock, on: :member
+  end
+
   resources :lists do
     resources :tasks do
       patch :reorder, on: :collection

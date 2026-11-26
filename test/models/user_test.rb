@@ -21,4 +21,18 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(name: "User2", email: "test@example.com", password: "password", time_zone: "UTC")
     assert_not user.valid?
   end
+
+  test "new users are neither admins nor blocked by default" do
+    user = User.new(name: "Test User", email: "test@example.com", password: "password", time_zone: "UTC")
+
+    assert_not user.admin?
+    assert_not user.blocked?
+  end
+
+  test "authenticates the password" do
+    user = User.create!(name: "Test User", email: "test@example.com", password: "password", time_zone: "UTC")
+
+    assert user.authenticate("password")
+    assert_not user.authenticate("wrong-password")
+  end
 end

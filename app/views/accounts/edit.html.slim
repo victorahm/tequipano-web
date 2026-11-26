@@ -1,0 +1,33 @@
+.app-main__header
+  h1.app-main__title Edit account
+
+= form_with model: @user, url: account_path, method: :patch, class: "form" do |f|
+  .form__group class=("form__group--error" if @user.errors[:name].any?)
+    = f.label :name, "Name", class: "form__label form__label--required"
+    = f.text_field :name, class: "form__input", autofocus: true
+    - @user.errors.full_messages_for(:name).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:email].any?)
+    = f.label :email, "Email", class: "form__label form__label--required"
+    = f.email_field :email, class: "form__input"
+    - @user.errors.full_messages_for(:email).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:time_zone].any?)
+    = f.label :time_zone, "Time zone", class: "form__label form__label--required"
+    = f.text_field :time_zone, class: "form__input"
+    - @user.errors.full_messages_for(:time_zone).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:password].any?)
+    = f.label :password, "New password", class: "form__label"
+    = f.password_field :password, class: "form__input"
+    span.form__hint Leave blank to keep the current password.
+    - @user.errors.full_messages_for(:password).each do |message|
+      span.form__error = message
+  .form__group class=("form__group--error" if @user.errors[:password_confirmation].any?)
+    = f.label :password_confirmation, "Confirm new password", class: "form__label"
+    = f.password_field :password_confirmation, class: "form__input"
+    - @user.errors.full_messages_for(:password_confirmation).each do |message|
+      span.form__error = message
+  .form__row
+    = f.submit "Save changes", class: "btn btn--primary"
+    = link_to "Cancel", account_path, class: "btn btn--secondary"
